@@ -1,10 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import Carousel from "react-bootstrap/Carousel";
 import Ark1 from "../assets/ark-r3d82hslgyhiw6z1.jpg";
 import Ark2 from "../assets/ark.jpg";
 import Ark3 from "../assets/wp1958805-ark-survival-evolved-wallpapers.jpg";
 
 const Home = () => {
+const [myData, setMyData] = useState([]);
+
+  const key = "9fb8b05e96644ef4b87e741eb5f9470d"
+
+  const getApiData = async () => {
+    try {
+      const res = await axios.get('https://api.rawg.io/api/games?key='+key)
+      setMyData(res.data.results)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  useEffect(() => {
+    getApiData();
+  }, []);
+
   return (
     <>
       <div className="carousel-section">
@@ -48,6 +66,22 @@ const Home = () => {
             </Carousel.Caption>
           </Carousel.Item>
         </Carousel>
+      </div>
+      <div>
+        <div>
+        {Object.values(myData).map((game) => {
+            <div key={game.id}>
+              <h1>{game.name}</h1>
+              <p>{game.rating}</p>
+              <Image
+                src={game.background_image}
+                fill
+                className="object-cover rounded-md"
+                alt={game.name}
+              />
+            </div>;
+          })}
+        </div>
       </div>
     </>
   );
